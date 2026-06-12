@@ -3,13 +3,26 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'item_cafe.dart';
 
-class CafeItemCard extends StatelessWidget {
+class CafeItemCard extends StatefulWidget {
   final CafeItem item;
 
   const CafeItemCard({
     super.key,
     required this.item,
   });
+
+  @override
+  State<CafeItemCard> createState() => _CafeItemCardState();
+}
+
+class _CafeItemCardState extends State<CafeItemCard> {
+  bool favorito = false;
+
+  void alterarFavorito() {
+    setState(() {
+      favorito = !favorito;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +39,7 @@ class CafeItemCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(14),
               child: Image.network(
-                item.imagemUrl,
+                widget.item.imagemUrl,
                 width: 90,
                 height: 90,
                 fit: BoxFit.cover,
@@ -52,7 +65,7 @@ class CafeItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.nome,
+                    widget.item.nome,
                     style: GoogleFonts.poppins(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -63,7 +76,7 @@ class CafeItemCard extends StatelessWidget {
                   const SizedBox(height: 4),
 
                   Text(
-                    item.categoria,
+                    widget.item.categoria,
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: Colors.brown,
@@ -73,7 +86,7 @@ class CafeItemCard extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   Text(
-                    'R\$ ${item.preco.toStringAsFixed(2).replaceAll('.', ',')}',
+                    'R\$ ${widget.item.preco.toStringAsFixed(2).replaceAll('.', ',')}',
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -81,6 +94,15 @@ class CafeItemCard extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+
+            IconButton(
+              onPressed: alterarFavorito,
+              icon: Icon(
+                favorito ? Icons.favorite : Icons.favorite_border,
+                color: favorito ? Colors.red : Colors.grey,
+                size: 30,
               ),
             ),
           ],
