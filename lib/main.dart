@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'home_page.dart';
 
 void main() {
-  runApp(const AsiCoffeeApp());
+  runApp(
+    const ProviderScope(
+      child: AsiCoffeeApp(),
+    ),
+  );
 }
 
 class AsiCoffeeApp extends StatelessWidget {
@@ -15,7 +21,7 @@ class AsiCoffeeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFF795548),
+          seedColor: const Color(0xFF795548),
         ),
         useMaterial3: true,
       ),
