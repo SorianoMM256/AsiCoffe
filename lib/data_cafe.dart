@@ -1,46 +1,67 @@
 import 'item_cafe.dart';
 
-const List<CafeItem> cafeItems = [
+final List<CafeItem> cafeItems = [
   CafeItem(
+    id: '1',
     nome: 'Cappuccino',
     preco: 9.90,
     categoria: 'Cafés Especiais',
     imagemUrl: 'https://images.unsplash.com/photo-1534778101976-62847782c213?w=400',
+    dataLancamento: DateTime(2026, 1, 10),
+    semGluten: true,
   ),
   CafeItem(
+    id: '2',
     nome: 'Latte',
     preco: 11.50,
     categoria: 'Cafés Especiais',
     imagemUrl: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400',
+    dataLancamento: DateTime(2026, 1, 15),
+    semGluten: true,
   ),
   CafeItem(
+    id: '3',
     nome: 'Expresso',
     preco: 6.90,
     categoria: 'Clássicos',
     imagemUrl: 'https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=400',
+    dataLancamento: DateTime(2026, 2, 2),
+    semGluten: true,
   ),
   CafeItem(
+    id: '4',
     nome: 'Mocha',
     preco: 12.90,
     categoria: 'Doces',
     imagemUrl: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400',
+    dataLancamento: DateTime(2026, 2, 18),
+    semGluten: true,
   ),
   CafeItem(
+    id: '5',
     nome: 'Croissant',
     preco: 8.50,
     categoria: 'Lanches',
     imagemUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400',
+    dataLancamento: DateTime(2026, 3, 5),
+    semGluten: false,
   ),
   CafeItem(
+    id: '6',
     nome: 'Brownie',
     preco: 7.90,
     categoria: 'Doces',
     imagemUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400',
+    dataLancamento: DateTime(2026, 3, 12),
+    semGluten: false,
   ),
   CafeItem(
+    id: '7',
     nome: 'Chá',
     preco: 5.90,
     categoria: 'Bebidas',
     imagemUrl: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400',
+    dataLancamento: DateTime(2026, 4, 1),
+    semGluten: true,
   ),
 ];
