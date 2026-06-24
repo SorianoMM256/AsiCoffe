@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'new_item_modal.dart';
 import 'item_cafe.dart';
+import 'item_details_page.dart';
 
 import 'card_item.dart';
 import 'providers.dart';
@@ -17,6 +18,13 @@ class HomePage extends ConsumerWidget {
     builder: (ctx) => const NewItemModal(),
   );
  }
+ void _openDetails(BuildContext context, CafeItem item) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (ctx) => ItemDetailsPage(item: item),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +81,10 @@ class HomePage extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final item = items[index];
 
-                  return _DismissibleItem(item: item);
+                  return _DismissibleItem(
+                    item: item,
+                    onTap: () => _openDetails(context, item),
+                  );
                 },
               ),
             ),
@@ -91,8 +102,12 @@ class HomePage extends ConsumerWidget {
 
 class _DismissibleItem extends ConsumerWidget {
   final CafeItem item;
+  final VoidCallback onTap;
 
-  const _DismissibleItem({required this.item});
+  const _DismissibleItem({
+    required this.item,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -134,7 +149,10 @@ class _DismissibleItem extends ConsumerWidget {
           ),
         );
       },
-      child: CafeItemCard(item: item),
+      child: CafeItemCard(
+        item: item,
+        onTap: onTap,
+      ),
     );
   }
 }

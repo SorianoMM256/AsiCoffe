@@ -7,10 +7,12 @@ import 'providers.dart';
 
 class CafeItemCard extends ConsumerWidget {
   final CafeItem item;
+  final VoidCallback onTap;
 
   const CafeItemCard({
     super.key,
     required this.item,
+    required this.onTap,
   });
 
   @override
@@ -24,7 +26,10 @@ class CafeItemCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Padding(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
@@ -104,6 +109,8 @@ class CafeItemCard extends ConsumerWidget {
           ],
         ),
       ),
+      ),
+      
     );
   }
 }
