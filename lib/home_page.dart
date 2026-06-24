@@ -1,48 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'new_item_modal.dart';
 import 'item_cafe.dart';
 import 'item_details_page.dart';
-
 import 'card_item.dart';
 import 'providers.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
-  void _openNewItemModal(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    builder: (ctx) => const NewItemModal(),
-  );
- }
- void _openDetails(BuildContext context, CafeItem item) {
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (ctx) => ItemDetailsPage(item: item),
-    ),
-  );
+  @override
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
+class _HomePageState extends ConsumerState<HomePage> {
+  int _selectedTab = 0;
+
+  void _openNewItemModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => const NewItemModal(),
+    );
+  }
+
+  void _openDetails(CafeItem item) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => ItemDetailsPage(item: item),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-  final items = ref.watch(productsProvider);
+  Widget build(BuildContext context) {
+    final items = _selectedTab == 0
+        ? ref.watch(productsProvider)
+        : ref.watch(favoriteProductsProvider);
+
+    final isFavoritesTab = _selectedTab == 1;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8F0),
       appBar: AppBar(
         actions: [
-        IconButton(
-          tooltip: 'Cadastrar item',
-          onPressed: () => _openNewItemModal(context),
-          icon: const Icon(Icons.add),
-         ),
+          IconButton(
+            tooltip: 'Cadastrar item',
+            onPressed: _openNewItemModal,
+            icon: const Icon(Icons.add),
+          ),
         ],
         backgroundColor: const Color(0xFF5D4037),
         centerTitle: true,
         title: Text(
-          'AsiCoffee',
+          isFavoritesTab ? 'Favoritos' : 'AsiCoffee',
           style: GoogleFonts.pacifico(
             fontSize: 28,
             color: const Color.fromARGB(255, 212, 200, 200),
@@ -54,47 +67,76 @@ class HomePage extends ConsumerWidget {
         child: Column(
           children: [
             Text(
-              'Cardápio da cafeteria',
+              isFavoritesTab ? 'Meus Favoritos' : 'Cardápio da cafeteria',
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF3E2723),
               ),
             ),
-
             const SizedBox(height: 8),
-
             Text(
-              'Escolha seu café favorito e marque os itens que mais gostou.',
+              isFavoritesTab
+                  ? 'Os itens favoritados aparecem aqui automaticamente.'
+                  : 'Escolha seu café favorito e marque os itens que mais gostou.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 color: Colors.brown,
               ),
             ),
-
             const SizedBox(height: 16),
-
             Expanded(
-              child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
+              child: items.isEmpty
+                  ? Center(
+                      child: Text(
+                        isFavoritesTab
+                            ? 'Nenhum favorito ainda.'
+                            : 'Nenhum item cadastrado no cardápio.',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: Colors.brown,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
 
-                  return _DismissibleItem(
-                    item: item,
-                    onTap: () => _openDetails(context, item),
-                  );
-                },
-              ),
+                        return _DismissibleItem(
+                          item: item,
+                          onTap: () => _openDetails(item),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openNewItemModal(context),
+        onPressed: _openNewItemModal,
         icon: const Icon(Icons.add),
         label: const Text('Novo item'),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedTab,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedTab = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.restaurant_menu),
+            label: 'Cardápio',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.favorite),
+            label: 'Favoritos',
+          ),
+        ],
       ),
     );
   }

@@ -40,3 +40,10 @@ final favoritesProvider =
     StateNotifierProvider<FavoritesNotifier, Set<String>>((ref) {
   return FavoritesNotifier();
 });
+
+final favoriteProductsProvider = Provider<List<CafeItem>>((ref) {
+  final products = ref.watch(productsProvider);
+  final favoriteIds = ref.watch(favoritesProvider);
+
+  return products.where((item) => favoriteIds.contains(item.id)).toList();
+});
