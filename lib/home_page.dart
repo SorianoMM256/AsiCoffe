@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'new_item_modal.dart';
+import 'item_cafe.dart';
 
 import 'card_item.dart';
 import 'providers.dart';
@@ -72,7 +73,7 @@ class HomePage extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final item = items[index];
 
-                  return CafeItemCard(item: item);
+                  return _DismissibleItem(item: item);
                 },
               ),
             ),
@@ -84,6 +85,56 @@ class HomePage extends ConsumerWidget {
         icon: const Icon(Icons.add),
         label: const Text('Novo item'),
       ),
+    );
+  }
+}
+
+class _DismissibleItem extends ConsumerWidget {
+  final CafeItem item;
+
+  const _DismissibleItem({required this.item});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Dismissible(
+      key: ValueKey(item.id),
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        decoration: BoxDecoration(
+          color: Colors.red.shade700,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      secondaryBackground: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        decoration: BoxDecoration(
+          color: Colors.red.shade700,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      onDismissed: (direction) {
+        ref.read(productsProvider.notifier).removeProduct(item.id);
+
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${item.nome} removido.'),
+            action: SnackBarAction(
+              label: 'Desfazer',
+              onPressed: () {
+                ref.read(productsProvider.notifier).addProduct(item);
+              },
+            ),
+          ),
+        );
+      },
+      child: CafeItemCard(item: item),
     );
   }
 }
