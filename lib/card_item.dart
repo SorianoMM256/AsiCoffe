@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'item_cafe.dart';
+import 'providers.dart';
 
-class CafeItemCard extends StatefulWidget {
+class CafeItemCard extends ConsumerWidget {
   final CafeItem item;
 
   const CafeItemCard({
@@ -12,20 +14,10 @@ class CafeItemCard extends StatefulWidget {
   });
 
   @override
-  State<CafeItemCard> createState() => _CafeItemCardState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteIds = ref.watch(favoritesProvider);
+    final isFavorite = favoriteIds.contains(item.id);
 
-class _CafeItemCardState extends State<CafeItemCard> {
-  bool favorito = false;
-
-  void alterarFavorito() {
-    setState(() {
-      favorito = !favorito;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       elevation: 4,
@@ -39,7 +31,7 @@ class _CafeItemCardState extends State<CafeItemCard> {
             ClipRRect(
               borderRadius: BorderRadius.circular(14),
               child: Image.network(
-                widget.item.imagemUrl,
+                item.imagemUrl,
                 width: 90,
                 height: 90,
                 fit: BoxFit.cover,
@@ -57,51 +49,55 @@ class _CafeItemCardState extends State<CafeItemCard> {
                 },
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.item.nome,
+                    item.nome,
                     style: GoogleFonts.poppins(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF3E2723),
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
                   Text(
-                    widget.item.categoria,
+                    item.categoria,
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: Colors.brown,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   Text(
-                    'R\$ ${widget.item.preco.toStringAsFixed(2).replaceAll('.', ',')}',
+                    'R\$ ${item.preco.toStringAsFixed(2).replaceAll('.', ',')}',
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF6D4C41),
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item.semGluten ? 'Sem glúten' : 'Contém glúten',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: item.semGluten ? Colors.green : Colors.orange,
+                    ),
+                  ),
                 ],
               ),
             ),
-
             IconButton(
-              onPressed: alterarFavorito,
+              tooltip: isFavorite ? 'Remover dos favoritos' : 'Favoritar',
+              onPressed: () {
+                ref.read(favoritesProvider.notifier).toggleFavorite(item.id);
+              },
               icon: Icon(
-                favorito ? Icons.favorite : Icons.favorite_border,
-                color: favorito ? Colors.red : Colors.grey,
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? Colors.red : Colors.grey,
                 size: 30,
               ),
             ),

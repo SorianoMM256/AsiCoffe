@@ -19,3 +19,24 @@ final productsProvider =
     StateNotifierProvider<ProductsNotifier, List<CafeItem>>((ref) {
   return ProductsNotifier();
 });
+
+class FavoritesNotifier extends StateNotifier<Set<String>> {
+  FavoritesNotifier() : super({});
+
+  void toggleFavorite(String id) {
+    final updatedFavorites = {...state};
+
+    if (updatedFavorites.contains(id)) {
+      updatedFavorites.remove(id);
+    } else {
+      updatedFavorites.add(id);
+    }
+
+    state = updatedFavorites;
+  }
+}
+
+final favoritesProvider =
+    StateNotifierProvider<FavoritesNotifier, Set<String>>((ref) {
+  return FavoritesNotifier();
+});
