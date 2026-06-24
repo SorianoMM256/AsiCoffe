@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'data_cafe.dart';
 import 'card_item.dart';
+import 'providers.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+  final items = ref.watch(productsProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8F0),
       appBar: AppBar(
@@ -50,9 +52,9 @@ class HomePage extends StatelessWidget {
 
             Expanded(
               child: ListView.builder(
-                itemCount: cafeItems.length,
+                itemCount: items.length,
                 itemBuilder: (context, index) {
-                  final item = cafeItems[index];
+                  final item = items[index];
 
                   return CafeItemCard(item: item);
                 },
