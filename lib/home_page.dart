@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'new_item_modal.dart';
 
 import 'card_item.dart';
 import 'providers.dart';
@@ -8,12 +9,27 @@ import 'providers.dart';
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
+  void _openNewItemModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (ctx) => const NewItemModal(),
+  );
+ }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
   final items = ref.watch(productsProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8F0),
       appBar: AppBar(
+        actions: [
+        IconButton(
+          tooltip: 'Cadastrar item',
+          onPressed: () => _openNewItemModal(context),
+          icon: const Icon(Icons.add),
+         ),
+        ],
         backgroundColor: const Color(0xFF5D4037),
         centerTitle: true,
         title: Text(
@@ -62,6 +78,11 @@ class HomePage extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openNewItemModal(context),
+        icon: const Icon(Icons.add),
+        label: const Text('Novo item'),
       ),
     );
   }
