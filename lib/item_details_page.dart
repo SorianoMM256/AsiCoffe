@@ -21,6 +21,7 @@ class ItemDetailsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favoriteIds = ref.watch(favoritesProvider);
     final isFavorite = favoriteIds.contains(item.id);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,8 +54,12 @@ class ItemDetailsPage extends ConsumerWidget {
                     return Container(
                       height: 230,
                       alignment: Alignment.center,
-                      color: Colors.brown.shade100,
-                      child: const Icon(Icons.local_cafe, size: 80),
+                      color: colorScheme.surfaceContainerHighest,
+                      child: Icon(
+                        Icons.local_cafe,
+                        size: 80,
+                        color: colorScheme.primary,
+                      ),
                     );
                   },
                 ),
@@ -73,7 +78,7 @@ class ItemDetailsPage extends ConsumerWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
-                  color: Colors.brown,
+                  color: colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 20),
@@ -108,9 +113,13 @@ class ItemDetailsPage extends ConsumerWidget {
                 onPressed: () {
                   ref.read(favoritesProvider.notifier).toggleFavorite(item.id);
                 },
-                icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                ),
                 label: Text(
-                  isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos',
+                  isFavorite
+                      ? 'Remover dos favoritos'
+                      : 'Adicionar aos favoritos',
                 ),
               ),
             ],
@@ -141,10 +150,15 @@ class _DetailLine extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        Text(value, style: GoogleFonts.poppins()),
+        Text(
+          value,
+          style: GoogleFonts.poppins(),
+        ),
       ],
     );
   }

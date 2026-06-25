@@ -44,7 +44,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     final isFavoritesTab = _selectedTab == 1;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F0),
       appBar: AppBar(
         actions: [
           IconButton(
@@ -53,13 +52,11 @@ class _HomePageState extends ConsumerState<HomePage> {
             icon: const Icon(Icons.add),
           ),
         ],
-        backgroundColor: const Color(0xFF5D4037),
         centerTitle: true,
         title: Text(
           isFavoritesTab ? 'Favoritos' : 'AsiCoffee',
           style: GoogleFonts.pacifico(
             fontSize: 28,
-            color: const Color.fromARGB(255, 212, 200, 200),
           ),
         ),
       ),
@@ -131,7 +128,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF3E2723),
               ),
             ),
             const SizedBox(height: 8),
@@ -142,7 +138,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: Colors.brown,
               ),
             ),
             const SizedBox(height: 16),
@@ -156,18 +151,41 @@ class _HomePageState extends ConsumerState<HomePage> {
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 16,
-                          color: Colors.brown,
                         ),
                       ),
                     )
-                  : ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        final item = items[index];
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth > 700) {
+                          return GridView.builder(
+                            itemCount: items.length,
+                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 420,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 3.3,
+                            ),
+                            itemBuilder: (context, index) {
+                              final item = items[index];
 
-                        return _DismissibleItem(
-                          item: item,
-                          onTap: () => _openDetails(item),
+                              return _DismissibleItem(
+                                item: item,
+                                onTap: () => _openDetails(item),
+                              );
+                            },
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            final item = items[index];
+
+                            return _DismissibleItem(
+                              item: item,
+                              onTap: () => _openDetails(item),
+                            );
+                          },
                         );
                       },
                     ),
