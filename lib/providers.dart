@@ -47,3 +47,47 @@ final favoriteProductsProvider = Provider<List<CafeItem>>((ref) {
 
   return products.where((item) => favoriteIds.contains(item.id)).toList();
 });
+
+enum ProductFilter {
+  onlyCoffee,
+  glutenFree,
+}
+
+class FiltersNotifier extends StateNotifier<Map<ProductFilter, bool>> {
+  FiltersNotifier()
+      : super({
+          ProductFilter.onlyCoffee: false,
+          ProductFilter.glutenFree: false,
+        });
+
+  void setFilter(ProductFilter filter, bool active) {
+    state = {
+      ...state,
+      filter: active,
+    };
+  }
+}
+
+final filtersProvider =
+    StateNotifierProvider<FiltersNotifier, Map<ProductFilter, bool>>((ref) {
+  return FiltersNotifier();
+});
+
+final filteredProductsProvider = Provider<List<CafeItem>>((ref) {
+  final products = ref.watch(productsProvider);
+  final filters = ref.watch(filtersProvider);
+
+  var filteredProducts = products;
+
+  if (filters[ProductFilter.onlyCoffee] == true) {
+    filteredProducts = filteredProducts
+        .where((item) => item.categoria.toLowerCase().contains('café'))
+        .toList();
+  }
+
+  if (filters[ProductFilter.glutenFree] == true) {
+    filteredProducts = filteredProducts.where((item) => item.semGluten).toList();
+  }
+
+  return filteredProducts;
+});

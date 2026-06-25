@@ -37,9 +37,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final items = _selectedTab == 0
-        ? ref.watch(productsProvider)
-        : ref.watch(favoriteProductsProvider);
+      ? ref.watch(filteredProductsProvider)
+      : ref.watch(favoriteProductsProvider);
 
+    final filters = ref.watch(filtersProvider);
     final isFavoritesTab = _selectedTab == 1;
 
     return Scaffold(
@@ -62,6 +63,65 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ),
+      drawer: Drawer(
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.local_cafe,
+                      size: 46,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Filtros do Cardápio',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SwitchListTile(
+                value: filters[ProductFilter.onlyCoffee] ?? false,
+                title: const Text('Mostrar apenas cafés'),
+                secondary: const Icon(Icons.coffee),
+                onChanged: (value) {
+                  ref
+                      .read(filtersProvider.notifier)
+                      .setFilter(ProductFilter.onlyCoffee, value);
+                },
+              ),
+              SwitchListTile(
+                value: filters[ProductFilter.glutenFree] ?? false,
+                title: const Text('Mostrar apenas sem glúten'),
+                secondary: const Icon(Icons.no_food),
+                onChanged: (value) {
+                  ref
+                      .read(filtersProvider.notifier)
+                      .setFilter(ProductFilter.glutenFree, value);
+                },
+              ),
+              const Divider(),
+              const ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text('AsiCoffee 2.0'),
+                subtitle: Text('Tabs, Drawer, Modal, Dismissible e Riverpod'),
+              ),
+            ],
+              ),
+            ),
+          ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
